@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'ui/discover.dart';
+import 'ui/watchlist.dart';
+import 'ui/search.dart';
+import 'ui/account.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -42,29 +47,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
+      // ...
       body: IndexedStack(
         index: _currentIndex,
         children: [
-          // Widget pour le premier onglet
-          Center(
-            child: Text('Onglet 1'),
-
-          ),
-          // Widget pour le deuxième onglet
-          Center(
-            child: Text('Onglet 2'),
-          ),
-          // Widget pour le troisième onglet
-          Center(
-            child: Text('Onglet 3'),
-          ),
-          // Widget pour le quatrième onglet
-          Center(
-            child: Text('Onglet 4'),
-          ),
+          DiscoverPage(),
+          WatchlistPage(),
+          SearchPage(),
+          AccountPage(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
