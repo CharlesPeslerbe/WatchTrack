@@ -51,6 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // Widget pour le premier onglet
           Center(
             child: Text('Onglet 1'),
+
           ),
           // Widget pour le deuxième onglet
           Center(
@@ -76,16 +77,16 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: _onItemTapped,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.explore),
             label: 'Discover',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Recherche',
+            icon: Icon(Icons.dvr),
+            label: 'Watchlist',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favoris',
+            icon: Icon(Icons.search),
+            label: 'Search',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
