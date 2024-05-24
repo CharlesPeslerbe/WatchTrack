@@ -1,6 +1,8 @@
-# watchtrack
+# WatchTrack
 
 A new Flutter project.
+
+[![Badge](https://forthebadge.com/images/badges/made-with-flutter.svg)](https://docs.flutter.dev)
 
 ## Getting Started
 
