@@ -2,7 +2,8 @@
 
 A new Flutter project.
 
-[![BadgeFlutter](https://forthebadge.com/images/badges/made-with-flutter.svg)](https://docs.flutter.dev) [![BadgeLove](https://forthebadge.com/images/badges/built-with-love.svg)]()[![BadgeCoffee](https://forthebadge.com/images/badges/powered-by-coffee.svg)]()
+[![BadgeFlutter](https://forthebadge.com/images/badges/made-with-flutter.svg)](https://docs.flutter.dev) [![BadgeLove](https://forthebadge.com/images/badges/built-with-love.svg)]()
+[![BadgeCoffee](https://forthebadge.com/images/badges/powered-by-coffee.svg)]()
 
 ## Getting Started
 
