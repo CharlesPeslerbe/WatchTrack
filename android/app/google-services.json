@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "447416471883",
+    "project_id": "watchtrack-1ae4f",
+    "storage_bucket": "watchtrack-1ae4f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447416471883:android:9bb9f1e59570f02b1198ce",
+        "android_client_info": {
+          "package_name": "com.watchtrack.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlz6ZG4EMJK0N3F0xa3DTJ6OO9XQ1uLUc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
