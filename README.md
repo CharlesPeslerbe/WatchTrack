@@ -3,7 +3,7 @@
 A new Flutter project.
 
 [![BadgeFlutter](https://forthebadge.com/images/badges/made-with-flutter.svg)](https://flutter.dev) [![BadgeLove](https://forthebadge.com/images/badges/built-with-love.svg)]()
-[![CoffeeJokeForDenis](https://forthebadge.com/images/badges/contains-17-coffee-cups.svg)]() [![BadgeJokeOptimized](https://forthebadge.com/images/badges/0-percent-optimized.svg)]()
+[![CoffeeJokeForDenis](https://forthebadge.com/images/badges/contains-17-coffee-cups.svg)]()
 
 ## Getting Started
 
