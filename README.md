@@ -2,7 +2,7 @@
 
 A new Flutter project.
 
-[![Badge](https://forthebadge.com/images/badges/made-with-flutter.svg)](https://docs.flutter.dev)
+[![BadgeFlutter](https://forthebadge.com/images/badges/made-with-flutter.svg)](https://docs.flutter.dev) [![BadgeLove](https://forthebadge.com/images/badges/built-with-love.svg)]()
 
 ## Getting Started
 
