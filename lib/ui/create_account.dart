@@ -1,37 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'MyHomePage.dart';
-import 'create_account.dart';
+import 'login.dart';
 
-class LoginPage extends StatefulWidget {
+class CreateAccountPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _CreateAccountPageState createState() => _CreateAccountPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _CreateAccountPageState extends State<CreateAccountPage> {
   final _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  void _login() async {
+  void _createAccount() async {
     if (_formKey.currentState!.validate()) {
       try {
-        final user = await _auth.signInWithEmailAndPassword(
+        final user = await _auth.createUserWithEmailAndPassword(
           email: _emailController.text,
           password: _passwordController.text,
         );
         if (user != null) {
-          // Fournir le paramètre "title" à MyHomePage
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => MyHomePage(title: 'Discover')),
+            MaterialPageRoute(builder: (context) => LoginPage()),
+          );
+        }
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Mot de passe trop faible'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else if (e.code == 'email-already-in-use') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Adresse e-mail déjà utilisée'),
+              backgroundColor: Colors.red,
+            ),
           );
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erreur de connexion : $e'),
+            content: Text('Erreur de création de compte : $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -39,18 +53,11 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _navigateToCreateAccount() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CreateAccountPage()),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Connexion'),
+        title: Text('Créer un compte'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -88,17 +95,16 @@ class _LoginPageState extends State<LoginPage> {
                   if (value!.isEmpty) {
                     return 'Veuillez entrer votre mot de passe';
                   }
+                  // Vérifier que le mot de passe contient au moins 6 caractères
+                  if (value.length < 6) {
+                    return 'Le mot de passe doit contenir au moins 6 caractères';
+                  }
                   return null;
                 },
               ),
               SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: _login,
-                child: Text('Connexion'),
-              ),
-              SizedBox(height: 16.0),
-              TextButton(
-                onPressed: _navigateToCreateAccount,
+                onPressed: _createAccount,
                 child: Text('Créer un compte'),
               ),
             ],
