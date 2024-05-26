@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'MyHomePage.dart';
+import '../MyHomePage.dart';
 import 'create_account.dart';
 
 class LoginPage extends StatefulWidget {
@@ -22,12 +22,28 @@ class _LoginPageState extends State<LoginPage> {
           password: _passwordController.text,
         );
         if (user != null) {
-          // Fournir le paramètre "title" à MyHomePage
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => MyHomePage(title: 'Discover')),
+            MaterialPageRoute(
+              builder: (context) => MyHomePage(
+                initialTitle: 'WatchTrack', // Fournir une valeur pour initialTitle
+              ),
+            ),
           );
         }
+      } on FirebaseAuthException catch (e) {
+        String errorMessage = 'Erreur de connexion';
+        if (e.code == 'user-not-found') {
+          errorMessage = 'Aucun utilisateur correspondant à cette adresse e-mail n\'a été trouvé';
+        } else if (e.code == 'wrong-password') {
+          errorMessage = 'Mot de passe incorrect';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+          ),
+        );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -45,7 +61,6 @@ class _LoginPageState extends State<LoginPage> {
       MaterialPageRoute(builder: (context) => CreateAccountPage()),
     );
   }
-
 
   void _resetPassword() async {
     if (_emailController.text.isEmpty) {
@@ -74,7 +89,6 @@ class _LoginPageState extends State<LoginPage> {
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {

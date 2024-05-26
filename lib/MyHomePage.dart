@@ -1,38 +1,36 @@
 import 'package:flutter/material.dart';
-import 'discover.dart';
-import 'watchlist.dart';
-import 'search.dart';
-import 'account.dart';
+import 'ui/discover.dart';
+import 'ui/watchlist.dart';
+import 'ui/search.dart';
+import 'ui/account.dart';
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  final String initialTitle;
 
-  final String title;
+  // Ajouter un constructeur par défaut qui initialise initialTitle à une valeur par défaut
+  MyHomePage({Key? key, this.initialTitle = 'Titre par défaut'}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // ...
+      appBar: AppBar(
+        title: Text(widget.initialTitle),
+      ),
       body: IndexedStack(
         index: _currentIndex,
         children: [
-          DiscoverPage(),
-          WatchlistPage(),
-          SearchPage(),
-          AccountPage(),
+          DiscoverPage(title: "Discover"),
+          WatchlistPage(title: "Watchlist"),
+          SearchPage(title: "Search"),
+          AccountPage(title: "Account"),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -42,7 +40,11 @@ class _MyHomePageState extends State<MyHomePage> {
         unselectedItemColor: Colors.white30,
         unselectedLabelStyle: TextStyle(color: Colors.white30),
         currentIndex: _currentIndex,
-        onTap: _onItemTapped,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.explore),

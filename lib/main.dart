@@ -6,11 +6,11 @@ import 'ui/discover.dart';
 import 'ui/watchlist.dart';
 import 'ui/search.dart';
 import 'ui/account.dart';
-
+import 'ui/login.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MyApp());
 }
 
@@ -20,13 +20,20 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Bottom Navigation Bar',
-      themeMode: ThemeMode.dark, // Utilise le thème sombre
+      themeMode: ThemeMode.dark, // Use dark theme
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         primarySwatch: Colors.red,
       ),
-      home: LaunchingPage(),
-
+      initialRoute: '/', // Set the initial route
+      routes: {
+        '/': (context) => LaunchingPage(), // Initial home screen
+        '/discover': (context) => DiscoverPage(title: 'Discover'), // Discover page
+        '/watchlist': (context) => WatchlistPage(title: 'Watchlist'), // Watchlist page
+        '/search': (context) => SearchPage(title: 'Search'), // Search page
+        '/account': (context) => AccountPage(title: 'Account'), // Account page
+        '/login': (context) => LoginPage(), // Add login screen route
+      },
     );
   }
 }
