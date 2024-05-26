@@ -46,6 +46,36 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+
+  void _resetPassword() async {
+    if (_emailController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Veuillez entrer votre adresse e-mail'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+    try {
+      await _auth.sendPasswordResetEmail(email: _emailController.text);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Un e-mail de réinitialisation de mot de passe a été envoyé'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erreur de réinitialisation de mot de passe : ${e.message}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,9 +127,13 @@ class _LoginPageState extends State<LoginPage> {
                 child: Text('Connexion'),
               ),
               SizedBox(height: 16.0),
-              TextButton(
+              ElevatedButton(
                 onPressed: _navigateToCreateAccount,
                 child: Text('Créer un compte'),
+              ),
+              TextButton(
+                onPressed: _resetPassword,
+                child: Text('Mot de passe oublié ?'),
               ),
             ],
           ),
