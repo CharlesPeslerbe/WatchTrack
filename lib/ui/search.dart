@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../api/tvmaze_api.dart';
+import 'show_info.dart'; // Assurez-vous d'importer le fichier show_info.dart
 
 class SearchPage extends StatefulWidget {
   final String title;
@@ -89,6 +90,14 @@ class _SearchPageState extends State<SearchPage> {
                       subtitle: show['summary'] != null
                           ? Text(show['summary'].replaceAll(RegExp(r'<[^>]*>'), ''))
                           : Text('Aucune description'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ShowInfoPage(show: show),
+                          ),
+                        );
+                      },
                     ),
                   );
                 },
