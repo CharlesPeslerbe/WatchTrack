@@ -7,16 +7,23 @@ import 'ui/account.dart';
 class MyHomePage extends StatefulWidget {
   final String initialTitle;
 
-  // Ajouter un constructeur par défaut qui initialise initialTitle à une valeur par défaut
+  // Constructeur avec initialTitle par défaut
   MyHomePage({Key? key, this.initialTitle = 'Titre par défaut'}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
+
+  // Liste des pages affichées dans le corps de l'application
+  final List<Widget> _pages = [
+    DiscoverPage(title: "Discover"),
+    WatchlistPage(title: "Watchlist"),
+    SearchPage(title: "Search"),
+    AccountPage(title: "Account"),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: IndexedStack(
         index: _currentIndex,
-        children: [
-          DiscoverPage(title: "Discover"),
-          WatchlistPage(title: "Watchlist"),
-          SearchPage(title: "Search"),
-          AccountPage(title: "Account"),
-        ],
+        children: _pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
-import '../api/tvmaze_api.dart'; // Assurez-vous que l'import est correct
+import '../api/tvmaze_api.dart';
+import '../storage/storage_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class EpisodeDetailPage extends StatelessWidget {
   final int episodeId;
+  final int showId;
+  final String showName;
+  final String showGenre;
+  final FirebaseStorageService _storageService;
 
-  const EpisodeDetailPage({Key? key, required this.episodeId}) : super(key: key);
+  EpisodeDetailPage({
+    Key? key,
+    required this.episodeId,
+    required this.showId,
+    required this.showName,
+    required this.showGenre,
+  })  : _storageService = FirebaseStorageService(),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +52,7 @@ class EpisodeDetailPage extends StatelessWidget {
                       : SizedBox(height: 200, child: Center(child: Text('No Image Available'))),
                   SizedBox(height: 16.0),
                   Text(
-                    episode['name'],
+                    episode['name'] ?? 'No name',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 16.0),
@@ -51,6 +64,40 @@ class EpisodeDetailPage extends StatelessWidget {
                   Text(
                     episode['summary']?.replaceAll(RegExp(r'<[^>]*>'), '') ?? 'No description available',
                     style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(height: 16.0),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final user = FirebaseAuth.instance.currentUser;
+                      if (user != null) {
+                        try {
+                          final episodeData = {
+                            'id': episode['id'],
+                            'name': episode['name'],
+                            'season': episode['season'],
+                            'number': episode['number'],
+                          };
+                          final showData = {
+                            'id': showId, // Utilizing showId
+                            'name': showName, // Passing showName
+                            'genre': showGenre, // Passing showGenre
+                          };
+                          await _storageService.markEpisodeAsWatched(user.uid, episodeData, showData);
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text('Episode marked as watched!'),
+                          ));
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text('Error: ${e.toString()}'),
+                          ));
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('User not authenticated'),
+                        ));
+                      }
+                    },
+                    child: Text('Mark as Watched'),
                   ),
                 ],
               ),

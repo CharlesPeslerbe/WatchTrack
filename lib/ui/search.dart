@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../api/tvmaze_api.dart';
-import 'show_info.dart'; // Assurez-vous d'importer le fichier show_info.dart
+import 'show_info.dart';
 
 class SearchPage extends StatefulWidget {
   final String title;
@@ -16,14 +16,15 @@ class _SearchPageState extends State<SearchPage> {
   List<dynamic> _searchResults = [];
   bool _isLoading = false;
 
+
   Future<void> _searchShows(String query) async {
     setState(() {
       _isLoading = true;
     });
-
+    // Instance de la classe de l'API
     final api = TvMazeApi();
+    // Appel de la méthode de recherche
     final response = await api.searchShows(query);
-
     setState(() {
       _searchResults = response;
       _isLoading = false;
@@ -50,7 +51,7 @@ class _SearchPageState extends State<SearchPage> {
             TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                labelText: 'Rechercher un titre',
+                labelText: 'Search a title',
                 suffixIcon: IconButton(
                   icon: Icon(Icons.search),
                   onPressed: () {
@@ -67,7 +68,7 @@ class _SearchPageState extends State<SearchPage> {
             _isLoading
                 ? CircularProgressIndicator()
                 : _searchResults.isEmpty
-                ? Text('Aucun résultat trouvé')
+                ? Text('Title not found...')
                 : Expanded(
               child: ListView.builder(
                 itemCount: _searchResults.length,
@@ -89,7 +90,7 @@ class _SearchPageState extends State<SearchPage> {
                       title: Text(show['name']),
                       subtitle: show['summary'] != null
                           ? Text(show['summary'].replaceAll(RegExp(r'<[^>]*>'), ''))
-                          : Text('Aucune description'),
+                          : Text('No description available'),
                       onTap: () {
                         Navigator.push(
                           context,

@@ -43,6 +43,11 @@ class _ShowInfoPageState extends State<ShowInfoPage> {
   @override
   Widget build(BuildContext context) {
     final imageUrl = widget.show['image'] != null ? widget.show['image']['original'] : null;
+    final showGenre = (widget.show['genres'] != null && widget.show['genres'].isNotEmpty)
+        ? widget.show['genres'].join(', ')
+        : 'No genre available';
+    final showName = widget.show['name'];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.show['name']),
@@ -126,7 +131,12 @@ class _ShowInfoPageState extends State<ShowInfoPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => EpisodeDetailPage(episodeId: episode['id']),
+                                builder: (context) => EpisodeDetailPage(
+                                  episodeId: episode['id'],
+                                  showId: widget.show['id'],
+                                  showName: showName, // Pass show name
+                                  showGenre: showGenre, // Pass show genre
+                                ),
                               ),
                             );
                           },
