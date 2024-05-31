@@ -45,19 +45,17 @@ class FirebaseStorageService {
     else {
       // On récupère les données de la série
       final show = existingData['shows'][showIndex];
-      // On cherche si l'épisode existe déjà dans la série
-      final episodeIndex = show['watchedEpisodes'].indexWhere((episode) => episode['id'] == episodeData['id']);
-      // Si l'épisode n'existe pas, on l'ajoute
-      if (episodeIndex == -1) {
+      // On cherche si un épisode existe déjà dans la série
+      if (show['watchedEpisodes'].isEmpty) {
         show['watchedEpisodes'].add(episodeData);
-      }
-      // Si l'épisode existe, on test si l'épisode est plus récent
-      else {
-        // Si l'épisode est plus récent, on le supprime et on met à jour les données
-
-        show['watchedEpisodes'][episodeIndex] = episodeData;
-        // Si l'épisode est moins récent, on annule
-
+      } else {
+        final currentEpisode = show['watchedEpisodes'].first;
+        // Comparer les épisodes par saison et numéro pour déterminer le plus récent
+        if ((episodeData['season'] > currentEpisode['season']) ||
+            (episodeData['season'] == currentEpisode['season'] && episodeData['number'] > currentEpisode['number'])) {
+          // Remplacer par l'épisode plus récent
+          show['watchedEpisodes'][0] = episodeData;
+        }
       }
     }
     // Envoyer les données

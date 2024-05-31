@@ -50,9 +50,9 @@ class TvMazeApi {
   }
 
   // Requête des épisodes d'une saison
-  Future<List<dynamic>> getEpisodes(int seasonId) async {
+  Future<List<dynamic>> getEpisodes(int showId) async {
     // Envoi de la requête
-    final response = await http.get(Uri.parse('$_baseUrl/seasons/$seasonId/episodes'));
+    final response = await http.get(Uri.parse('$_baseUrl/seasons/$showId/episodes'));
     // Si la requête est correcte
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -76,6 +76,29 @@ class TvMazeApi {
     // Gestion de l'erreur
     else {
       throw Exception('Failed to load episode details');
+    }
+  }
+
+  Future<Map<String, dynamic>> getNextEpisode(int showId, int season, int episodeNumber) async {
+    // Increment episode number to get the next episode
+    int nextEpisodeNumber = episodeNumber + 1;
+
+    // Attempt to get the next episode in the same season
+    final nextEpisodeUrl = '$_baseUrl/shows/$showId/episodebynumber?season=$season&number=$nextEpisodeNumber';
+    final nextEpisodeResponse = await http.get(Uri.parse(nextEpisodeUrl));
+
+    if (nextEpisodeResponse.statusCode == 200) {
+      return jsonDecode(nextEpisodeResponse.body);
+    } else {
+      // If no episode found in the same season, try to get the first episode of the next season
+      final nextSeasonUrl = '$_baseUrl/shows/$showId/episodebynumber?season=${season + 1}&number=1';
+      final nextSeasonResponse = await http.get(Uri.parse(nextSeasonUrl));
+
+      if (nextSeasonResponse.statusCode == 200) {
+        return jsonDecode(nextSeasonResponse.body);
+      } else {
+        throw Exception('Failed to load next episode');
+      }
     }
   }
 

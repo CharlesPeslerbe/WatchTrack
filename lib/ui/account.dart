@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:convert';
 
 class AccountPage extends StatefulWidget {
   final String title;
@@ -12,11 +14,41 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   late User? _user;
+  int _totalShows = 0;
+  int _totalEpisodes = 0;
 
   @override
   void initState() {
     super.initState();
     _user = FirebaseAuth.instance.currentUser;
+    _loadUserStatistics();
+  }
+
+  Future<void> _loadUserStatistics() async {
+    if (_user != null) {
+      try {
+        final ref = FirebaseStorage.instance.ref('${_user!.uid}/episodes.json');
+        final data = await ref.getData();
+        if (data != null) {
+          final jsonData = jsonDecode(utf8.decode(data));
+          _parseStatistics(jsonData);
+        }
+      } catch (e) {
+        print("Error loading user statistics: $e");
+      }
+    }
+  }
+
+  void _parseStatistics(Map<String, dynamic> jsonData) {
+    if (jsonData.containsKey('shows')) {
+      final shows = jsonData['shows'] as List<dynamic>;
+      _totalShows = shows.length;
+      _totalEpisodes = shows.fold(0, (total, show) {
+        final watchedEpisodes = show['watchedEpisodes'] as List<dynamic>;
+        return total + watchedEpisodes.length;
+      });
+      setState(() {});
+    }
   }
 
   Future<void> _signOut() async {
@@ -27,7 +59,7 @@ class _AccountPageState extends State<AccountPage> {
   Future<void> _deleteAccount() async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button!
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Delete Account'),
@@ -51,7 +83,7 @@ class _AccountPageState extends State<AccountPage> {
                 Navigator.of(context).pop();
                 try {
                   await _user!.delete();
-                  await _signOut(); // Call sign out method to redirect to login
+                  await _signOut();
                 } catch (e) {
                   print(e);
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -77,63 +109,27 @@ class _AccountPageState extends State<AccountPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Display user's profile photo
-            CircleAvatar(
-              radius: 50,
-              backgroundImage: _user != null && _user!.photoURL != null
-                  ? NetworkImage(_user!.photoURL!)
-                  : AssetImage('assets/default_profile.png') as ImageProvider,
-            ),
             SizedBox(height: 16),
-            // Display user's display name
-            Text(
-              _user != null ? _user!.displayName ?? 'Username' : 'Username',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+            Center(
+              child: Text(
+                _user != null ? _user!.email ?? 'Email not available' : 'User not logged in',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
             SizedBox(height: 8),
-            // Display user statistics (you may replace dummy values with actual user data)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Number of followed series
-                _buildStatistic('123', 'Series'),
+                _buildStatistic(_totalShows.toString(), 'Series'),
                 SizedBox(width: 16),
-                // Number of episodes watched
-                _buildStatistic('456', 'Episodes'),
-                SizedBox(width: 16),
-                // Number of days spent watching series
-                _buildStatistic('789', 'Days'),
+                _buildStatistic(_totalEpisodes.toString(), 'Episodes'),
               ],
             ),
             SizedBox(height: 16),
-            // Social media login buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.facebook),
-                  color: Colors.blue,
-                  onPressed: () {},
-                ),
-                SizedBox(width: 16),
-                IconButton(
-                  icon: Icon(Icons.add_box),
-                  color: Colors.grey,
-                  onPressed: () {},
-                ),
-                SizedBox(width: 16),
-                IconButton(
-                  icon: Icon(Icons.add_box),
-                  color: Colors.pink,
-                  onPressed: () {},
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            // Fancy logout button
             ElevatedButton(
               onPressed: _signOut,
               style: ElevatedButton.styleFrom(
@@ -154,7 +150,6 @@ class _AccountPageState extends State<AccountPage> {
               ),
             ),
             SizedBox(height: 16),
-            // Delete account button
             ElevatedButton(
               onPressed: _user != null ? _deleteAccount : null,
               style: ElevatedButton.styleFrom(
@@ -180,7 +175,6 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  // Helper method to build statistics widget
   Widget _buildStatistic(String value, String label) {
     return Column(
       children: [
